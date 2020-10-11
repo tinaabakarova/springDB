@@ -18,12 +18,10 @@ public class BookOperationsService {
     }
 
     @ShellMethod(key = "create-book", value = "Create a book in DB")
-    public void createBook(@ShellOption({"id"})long id,
-                           @ShellOption({"name"})String name,
+    public void createBook(@ShellOption({"name"})String name,
                            @ShellOption({"author"})String author,
                            @ShellOption({"genre"})String genre){
-        Book book = new Book(id, name, author, genre);
-        booksDao.insert(book);
+        booksDao.insert(name, author, genre);
     }
 
     @ShellMethod(key = "show-books", value = "Show all books in DB")

@@ -15,29 +15,43 @@ import java.util.Map;
 @Repository
 public class BooksDaoJdbc implements BooksDao{
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
+    private GenresDao genresDao;
+    private AuthorsDao authorsDao;
 
-    public BooksDaoJdbc(NamedParameterJdbcOperations namedParameterJdbcOperations)
+    public BooksDaoJdbc(NamedParameterJdbcOperations namedParameterJdbcOperations, AuthorsDao authorsDao,
+                        GenresDao genresDao)
     {
         this.namedParameterJdbcOperations = namedParameterJdbcOperations;
+        this.authorsDao = authorsDao;
+        this.genresDao = genresDao;
     }
 
-    public void insert(Book book) {
-        Map<String, Object> params = Map.of("id", book.getId(), "name", book.getName(),
-                "author", book.getAuthor(), "genre", book.getGenre());
-        namedParameterJdbcOperations.update("insert into books (id, name, author, genre) values (:id, :name, :author, :genre)", params);
+    @Override
+    public void insert(String name, String author, String genre) {
+        long authorId = authorsDao.getIdByName(author).getId();
+        long genreId = genresDao.getIdByName(genre).getId();
+        Map<String, Object> params = Map.of("name", name,
+                "author", authorId, "genre", genreId);
+
+        namedParameterJdbcOperations.update("insert into books (name, author, genre) values (:name, :author, :genre)", params);
     }
 
+    @Override
     public Book getById(long id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
         return namedParameterJdbcOperations.queryForObject(
-                "select * from books where id = :id", params, new BookMapper()
+                "select id, name, author_name, genre_name from books, authors, genres where id = :id and " +
+                        "books.author = authors.author_id and books.genre = genres.genre_id", params, new BookMapper()
         );
     }
 
+    @Override
     public List<Book> getAll() {
-        return namedParameterJdbcOperations.query("select id, name, author, genre from books", new BookMapper());
+        return namedParameterJdbcOperations.query("select id, name, author_name, genre_name from books, authors, genres " +
+                "where books.author = authors.author_id and books.genre = genres.genre_id", new BookMapper());
     }
 
+    @Override
     public void deleteById(long id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
         namedParameterJdbcOperations.update(
@@ -45,11 +59,14 @@ public class BooksDaoJdbc implements BooksDao{
         );
     }
 
+    @Override
     public void update(Book book){
+        long authorId = authorsDao.getIdByName(book.getAuthor()).getId();
+        long genreId = genresDao.getIdByName(book.getGenre()).getId();
         Map<String, Object> params = Map.of("id", book.getId(),
                                             "name", book.getName(),
-                                            "author", book.getAuthor(),
-                                            "genre", book.getGenre());
+                                            "author", authorId,
+                                            "genre", genreId);
         namedParameterJdbcOperations.update(
                 "update books set name = :name, author = :author, genre = :genre where id = :id", params);
 
@@ -60,8 +77,8 @@ public class BooksDaoJdbc implements BooksDao{
         public Book mapRow(ResultSet resultSet, int i) throws SQLException {
             long id = resultSet.getLong("id");
             String name = resultSet.getString("name");
-            String author = resultSet.getString("author");
-            String genre = resultSet.getString("genre");
+            String author = resultSet.getString("author_name");
+            String genre = resultSet.getString("genre_name");
             return new Book(id, name, author, genre);
         }
     }
