@@ -28,10 +28,6 @@ class BooksDaoTest {
     private TestEntityManager em;
 
     @Autowired
-    private AuthorsDaoJpa authorsDaoJpa;
-    @Autowired
-    private GenresDaoJpa genresDaoJpa;
-    @Autowired
     private BooksDaoJpa booksDaoJpa;
 
     @DisplayName(" должен корректно сохранять всю информацию о книге")
