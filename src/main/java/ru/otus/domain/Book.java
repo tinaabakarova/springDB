@@ -23,13 +23,13 @@ public class Book {
     private String name;
 
     @BatchSize(size = 5)
-    @ManyToOne(targetEntity = Author.class, fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,
+    @ManyToOne(targetEntity = Author.class, cascade = {CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "AUTHOR", nullable = false)
     private Author author;
 
     @BatchSize(size = 5)
-    @ManyToOne(targetEntity = Genre.class, fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,
+    @ManyToOne(targetEntity = Genre.class, cascade = {CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "GENRE", nullable = false)
     private Genre genre;
