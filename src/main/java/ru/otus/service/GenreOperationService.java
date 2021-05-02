@@ -23,7 +23,7 @@ public class GenreOperationService {
         genresDao.save(new Genre(name));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @ShellMethod(key = "show-genres", value = "Show all genres in DB")
     public void showAllGenre(){
         genresDao.getAll().forEach(genre -> ioService.out(genre.toString()));

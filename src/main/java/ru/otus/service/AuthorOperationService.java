@@ -23,7 +23,7 @@ public class AuthorOperationService {
         authorsDao.save(new Author(name));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @ShellMethod(key = "show-authors", value = "Show all authors in DB")
     public void showAllAuthors(){
         authorsDao.getAll().forEach(author -> ioService.out(author.toString()));

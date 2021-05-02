@@ -5,7 +5,6 @@ import ru.otus.domain.Genre;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
@@ -49,8 +48,7 @@ public class GenresDaoJpa implements GenresDao {
 
     @Override
     public void deleteById(long id) {
-        Query query = em.createQuery("delete from Genre where id = :id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+        Optional<Genre> genre = Optional.ofNullable(em.find(Genre.class, id));
+        genre.ifPresent(value -> em.remove(value));
     }
 }

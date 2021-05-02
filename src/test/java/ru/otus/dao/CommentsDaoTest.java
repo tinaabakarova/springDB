@@ -30,15 +30,6 @@ class CommentsDaoTest {
         assertThat(commentDaoJpa.getById(1)).isPresent().get().isEqualTo(comment);
     }
 
-    @DisplayName("должен загружать список всех комментариев по книге с полной информацией о них")
-    @Test
-    void getAllByBook() {
-        Book book = em.find(Book.class, 1L);
-        Comment comment = em.find(Comment.class, 1L);
-        List<Comment> comments = commentDaoJpa.getAll(book);
-        assertThat(comments).containsAll(List.of(comment));
-    }
-
     @DisplayName("должен загружать список всех комментариев с полной информацией о них")
     @Test
     void getAll() {

@@ -18,18 +18,24 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @Column(name = "NAME", nullable = false, unique = true)
     private String name;
+
     @BatchSize(size = 5)
-    @ManyToOne(targetEntity = Author.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Author.class, fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "AUTHOR", nullable = false)
     private Author author;
+
     @BatchSize(size = 5)
-    @ManyToOne(targetEntity = Genre.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Genre.class, fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,
+            CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "GENRE", nullable = false)
     private Genre genre;
-    @OneToMany(targetEntity = Comment.class, cascade = CascadeType.ALL,
-               fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "book")
+
+    @OneToMany(cascade = CascadeType.ALL,
+               fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "book")
     private List<Comment> comments;
 
     public Book(String name, Author author, Genre genre) {

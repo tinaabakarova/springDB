@@ -12,8 +12,6 @@ public interface BooksDao {
 
     public void deleteById(long id);
 
-    public void update(Book book);
-
     Book save(Book book);
 
     public Optional<Book> getById(long id);

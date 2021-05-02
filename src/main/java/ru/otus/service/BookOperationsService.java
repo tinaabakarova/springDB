@@ -35,7 +35,7 @@ public class BookOperationsService {
         booksDao.save(new Book(name, authorsDao.findByName(author), genresDao.findByName(genre)));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @ShellMethod(key = "show-books", value = "Show all books in DB")
     public void showAllBooks(){
         booksDao.getAll().forEach(book -> ioService.out(book.toString()));
@@ -47,7 +47,7 @@ public class BookOperationsService {
         booksDao.deleteById(id);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @ShellMethod(key = "show-book", value = "Show book by name")
     public void showBookByName(@ShellOption({"name"})String name){
         ioService.out(booksDao.findByName(name).toString());

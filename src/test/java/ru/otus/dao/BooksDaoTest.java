@@ -62,18 +62,4 @@ class BooksDaoTest {
         List<Book> books = booksDaoJpa.getAll();
         assertThat(books).containsAll(List.of(ruslanAndLudmila, kingSaltanFairytale));
     }
-
-    @DisplayName(" должен изменять имя заданную книгу по его id")
-    @Test
-    void updateTest() {
-        Book book = em.find(Book.class, 2L);
-        assertThat(book).isNotNull();
-        String oldName = book.getName();
-        em.detach(book);
-        Book bookNew = em.find(Book.class, 2L);
-        bookNew.setName("changed");
-        booksDaoJpa.update(bookNew);
-        Book updated = em.find(Book.class,2L);
-        assertThat(updated.getName()).isNotEqualTo(oldName).isEqualTo("changed");
-    }
 }

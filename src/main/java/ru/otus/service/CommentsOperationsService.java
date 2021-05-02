@@ -31,14 +31,14 @@ public class CommentsOperationsService {
         commentsDao.save(new Comment(comment, book, userName));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @ShellMethod(key = "show-comments-by-book", value = "Show all comments by book in DB")
     public void showAllCommentsByBook(@ShellOption({"bookName"})String bookName){
         Book book = booksDao.findByName(bookName);
-        commentsDao.getAll(book).forEach(comment -> ioService.out(comment.toString()));
+        book.getComments().forEach(comment -> ioService.out(comment.toString()));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @ShellMethod(key = "show-comments", value = "Show all comments in DB")
     public void showAllComments(){
         commentsDao.getAll().forEach(comment -> ioService.out(comment.toString()));
@@ -46,7 +46,7 @@ public class CommentsOperationsService {
 
     @Transactional
     @ShellMethod(key = "delete-comment", value = "Delete an comment in DB")
-    public void deleteGenre(@ShellOption({"id"})long id){
+    public void deleteComment(@ShellOption({"id"})long id){
         commentsDao.deleteById(id);
     }
 

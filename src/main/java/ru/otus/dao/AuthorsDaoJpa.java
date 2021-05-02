@@ -5,7 +5,6 @@ import ru.otus.domain.Author;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
@@ -50,8 +49,7 @@ public class AuthorsDaoJpa implements AuthorsDao {
 
     @Override
     public void deleteById(long id) {
-        Query query = em.createQuery("delete from Author where id = :id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+        Optional<Author> author = Optional.ofNullable(em.find(Author.class, id));
+        author.ifPresent(value -> em.remove(value));
     }
 }
