@@ -1,16 +1,8 @@
 package ru.otus.dao;
 
+import org.springframework.data.repository.CrudRepository;
 import ru.otus.domain.Comment;
 
-import java.util.List;
-import java.util.Optional;
+public interface CommentsDao extends CrudRepository<Comment, Long> {
 
-public interface CommentsDao {
-    public Optional<Comment> getById(long id);
-
-    public List<Comment> getAll();
-
-    public void deleteById(long id);
-
-    Comment save(Comment comment);
 }

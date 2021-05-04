@@ -1,19 +1,9 @@
 package ru.otus.dao;
 
+import org.springframework.data.repository.CrudRepository;
 import ru.otus.domain.Genre;
 
-import java.util.List;
-import java.util.Optional;
-
-public interface GenresDao {
-
-    public Optional<Genre> getById(long id);
+public interface GenresDao extends CrudRepository<Genre, Long> {
 
     public Genre findByName(String name);
-
-    public void deleteById(long id);
-
-    public List<Genre> getAll();
-
-    Genre save(Genre genre);
 }

@@ -26,7 +26,7 @@ public class GenreOperationService {
     @Transactional(readOnly = true)
     @ShellMethod(key = "show-genres", value = "Show all genres in DB")
     public void showAllGenre(){
-        genresDao.getAll().forEach(genre -> ioService.out(genre.toString()));
+        genresDao.findAll().forEach(genre -> ioService.out(genre.toString()));
     }
 
     @Transactional

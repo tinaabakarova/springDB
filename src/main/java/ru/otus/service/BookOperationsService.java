@@ -38,7 +38,7 @@ public class BookOperationsService {
     @Transactional(readOnly = true)
     @ShellMethod(key = "show-books", value = "Show all books in DB")
     public void showAllBooks(){
-        booksDao.getAll().forEach(book -> ioService.out(book.toString()));
+        booksDao.findAll().forEach(book -> ioService.out(book.toString()));
     }
 
     @Transactional
@@ -62,7 +62,7 @@ public class BookOperationsService {
         Author author = authorsDao.findByName(author_name);
         Genre genre = genresDao.findByName(genre_name);
 
-        Optional<Book> bookOptional = booksDao.getById(id);
+        Optional<Book> bookOptional = booksDao.findById(id);
         if (bookOptional.isPresent()){
             Book book = bookOptional.get();
             book.setName(name);
