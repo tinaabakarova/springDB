@@ -1,3 +1,19 @@
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
+    initialization-mode: always
+    driverClassName: org.h2.Driver
+    platform: h2
+    data: classpath:Data.sql
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    database: H2
+    database-platform: org.hibernate.dialect.H2Dialect
+
+    show-sql: true
+
+debug: true
+

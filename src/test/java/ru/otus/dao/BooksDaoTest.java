@@ -1,70 +1,65 @@
 package ru.otus.dao;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.shell.jline.InteractiveShellApplicationRunner;
-import org.springframework.shell.jline.ScriptShellApplicationRunner;
-import ru.otus.dao.AuthorsDaoJdbc;
-import ru.otus.dao.BooksDaoJdbc;
-import ru.otus.dao.GenresDaoJdbc;
+import ru.otus.domain.Author;
 import ru.otus.domain.Book;
+import ru.otus.domain.Genre;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-@JdbcTest(properties = {
-        InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
-        ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
-})
-@Import({BooksDaoJdbc.class, AuthorsDaoJdbc.class, GenresDaoJdbc.class})
+@DisplayName("Репозиторий на основе Jpa для работы с книгами ")
+@DataJpaTest
+@Import({BooksDaoJpa.class, AuthorsDaoJpa.class, GenresDaoJpa.class})
 class BooksDaoTest {
+    private final Author author = new Author(1, "Pushkin A.S");
+    private final Genre genre = new Genre(1, "poem");
+    private final Book ruslanAndLudmila = new Book(1, "Ruslan and Ludmila", author, genre);
+    private final Book kingSaltanFairytale = new Book(2, "King Saltan fairytale", author, genre);
+    private final Book testBook = new Book( 3,"test", author, genre);
 
     @Autowired
-    private AuthorsDaoJdbc authorsDaoJdbc;
-    @Autowired
-    private GenresDaoJdbc genresDaoJdbc;
-    @Autowired
-    private BooksDaoJdbc booksDaoJdbc;
+    private TestEntityManager em;
 
+    @Autowired
+    private BooksDaoJpa booksDaoJpa;
+
+    @DisplayName(" должен корректно сохранять всю информацию о книге")
     @Test
-    void insertBookTest() {
-        Book book = new Book(3, "test", "unit testovich", "poem");
-        booksDaoJdbc.insert("test", "unit testovich", "poem");
-        assertThat(book.equals(booksDaoJdbc.getById(3)));
+    void saveBookTest() {
+        booksDaoJpa.save(testBook);
+        assertThat(testBook).isEqualTo(em.find(Book.class, testBook.getId()));
     }
 
+    @DisplayName(" должен загружать информацию о нужной книге по его id")
     @Test
     void getByIdTest() {
-        Book book = new Book(1, "Ruslan and Ludmila", "unit testovich", "poem");
-        assertThat(book.equals(booksDaoJdbc.getById(1)));
+        Book book = em.find(Book.class, 2L);
+        assertThat(booksDaoJpa.getById(2)).isPresent().get().isEqualTo(book);
     }
 
+
+    @DisplayName(" должен удалять заданную книгу по его id")
     @Test
     void deleteByIdBookTest() {
-        Book book = new Book(3, "test", "unit testovich", "poem");
-        booksDaoJdbc.insert("test", "unit testovich", "poem");
-        booksDaoJdbc.deleteById(3);
-        assertThrows(EmptyResultDataAccessException.class, () -> {booksDaoJdbc.getById(3);});
+        Book book = em.find(Book.class, 2L);
+        assertThat(book).isNotNull();
+        em.detach(book);
+        booksDaoJpa.deleteById(2);
+        Book deleted = em.find(Book.class,2L);
+        assertThat(deleted).isNull();
     }
 
+    @DisplayName("должен загружать список всех книг с полной информацией о них")
     @Test
-    void getAllByIdTest() {
-        List<Book> books = booksDaoJdbc.getAll();
-        assertThat(books.containsAll(List.of(new Book(1, "Ruslan and Ludmila", "unit testovich", "poem"),
-                                    new Book(2, "King Saltan fairytail", "unit testovich", "poem"))));
-    }
-
-    @Test
-    void updateByIdTest() {
-        Book book = new Book(1, "test", "unit testovich", "poem");
-        booksDaoJdbc.update(book);
-        assertThat(booksDaoJdbc.getById(1).equals(book));
+    void getAllTest() {
+        List<Book> books = booksDaoJpa.getAll();
+        assertThat(books).containsAll(List.of(ruslanAndLudmila, kingSaltanFairytale));
     }
 }

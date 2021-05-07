@@ -1,15 +1,28 @@
 package ru.otus.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.util.Objects;
 
-@RequiredArgsConstructor
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name="AUTHORS")
 public class Author {
-    private final long id;
-    private final String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="AUTHOR_ID", nullable = false, unique = true)
+    private long id;
+    @Column(name="AUTHOR_NAME", nullable = false, unique = true)
+    private String name;
+
+    public Author(String name) {
+        this.name = name;
+    }
 
     @Override
     public boolean equals(Object o) {
