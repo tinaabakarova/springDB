@@ -41,7 +41,7 @@ public class CommentsOperationsService {
     @Transactional(readOnly = true)
     @ShellMethod(key = "show-comments", value = "Show all comments in DB")
     public void showAllComments(){
-        commentsDao.getAll().forEach(comment -> ioService.out(comment.toString()));
+        commentsDao.findAll().forEach(comment -> ioService.out(comment.toString()));
     }
 
     @Transactional
@@ -54,7 +54,7 @@ public class CommentsOperationsService {
     @ShellMethod(key = "update-comment", value = "Update comment by id")
     public void updateCommentById(@ShellOption({"id"})long id,
                                @ShellOption({"comment"})String commentString) {
-        Optional<Comment> comment = commentsDao.getById(id);
+        Optional<Comment> comment = commentsDao.findById(id);
         if (comment.isPresent()){
             Comment comment1 = comment.get();
             comment1.setComment(commentString);
