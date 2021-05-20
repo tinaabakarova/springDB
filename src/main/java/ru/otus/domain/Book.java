@@ -1,42 +1,28 @@
 package ru.otus.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.BatchSize;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 @Data
 @NoArgsConstructor
-@Entity
-@Table(name = "BOOKS")
-@NamedEntityGraph(name = "otus-books-entity-graph",
-        attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genre")})
+@AllArgsConstructor
+@Document
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @Column(name = "NAME", nullable = false, unique = true)
+    private String id;
     private String name;
 
-    @BatchSize(size = 5)
-    @ManyToOne(targetEntity = Author.class, cascade = {CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "AUTHOR", nullable = false)
+    @DBRef
     private Author author;
 
-    @BatchSize(size = 5)
-    @ManyToOne(targetEntity = Genre.class, cascade = {CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "GENRE", nullable = false)
+    @DBRef
     private Genre genre;
-
-    @OneToMany(cascade = CascadeType.ALL,
-               fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "book")
-    private List<Comment> comments;
 
     public Book(String name, Author author, Genre genre) {
         this.name = name;
@@ -44,11 +30,17 @@ public class Book {
         this.genre = genre;
     }
 
-    public Book(long id, String name, Author author, Genre genre) {
-        this.id = id;
-        this.name = name;
-        this.author = author;
-        this.genre = genre;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book)) return false;
+        Book book = (Book) o;
+        return id.equals(book.id) && name.equals(book.name) && author.equals(book.author) && genre.equals(book.genre);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, author, genre);
     }
 
     @Override
@@ -56,24 +48,8 @@ public class Book {
         return "Book{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", author='" + author.getName() + '\'' +
-                ", genre='" + genre.getName() + '\'' +
+                ", author=" + author +
+                ", genre=" + genre +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Book)) return false;
-        Book book = (Book) o;
-        return id == book.id &&
-                name.equals(book.name) &&
-                Objects.equals(author, book.author) &&
-                Objects.equals(genre, book.genre);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, author.getName(), genre.getName());
     }
 }

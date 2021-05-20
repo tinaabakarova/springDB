@@ -4,15 +4,16 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.dao.AuthorsDao;
+import ru.otus.dao.AuthorDao;
 import ru.otus.domain.Author;
+import ru.otus.utils.Messages;
 
 @ShellComponent
 public class AuthorOperationService {
-    private final AuthorsDao authorsDao;
+    private final AuthorDao authorsDao;
     private final IoService ioService;
 
-    public AuthorOperationService(AuthorsDao authorsDao, IoService ioService) {
+    public AuthorOperationService(AuthorDao authorsDao, IoService ioService) {
         this.authorsDao = authorsDao;
         this.ioService = ioService;
     }
@@ -31,7 +32,12 @@ public class AuthorOperationService {
 
     @Transactional
     @ShellMethod(key = "delete-author", value = "Delete an author in DB")
-    public void deleteAuthor(@ShellOption({"id"})long id){
-        authorsDao.deleteById(id);
+    public void deleteAuthor(@ShellOption({"id"})String id){
+        if (authorsDao.isReferenceExistInRepository(id)) {
+            ioService.out(Messages.DELETE_REFERENCE_ERROR);
+        } else {
+            authorsDao.deleteById(id);
+        }
+
     }
 }

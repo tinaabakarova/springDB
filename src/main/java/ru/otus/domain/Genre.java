@@ -3,21 +3,18 @@ package ru.otus.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import java.util.Objects;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "GENRES")
+@Document
 public class Genre {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "GENRE_ID", nullable = false, unique = true)
-    private long id;
-    @Column(name = "GENRE_NAME", nullable = false, unique = true)
+    private String id;
     private String name;
 
     public Genre(String name) {
@@ -29,7 +26,7 @@ public class Genre {
         if (this == o) return true;
         if (!(o instanceof Genre)) return false;
         Genre genre = (Genre) o;
-        return id == genre.id &&
+        return id.equals(genre.id) &&
                 name.equals(genre.name);
     }
 
