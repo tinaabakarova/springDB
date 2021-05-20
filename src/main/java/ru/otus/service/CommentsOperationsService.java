@@ -4,22 +4,24 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.dao.BooksDao;
+import ru.otus.dao.BookDao;
 import ru.otus.dao.CommentsDao;
 import ru.otus.domain.Book;
 import ru.otus.domain.Comment;
 
 import java.util.Optional;
 
+import static ru.otus.utils.Messages.ENTITY_NOT_FOUND;
+
 @ShellComponent
 public class CommentsOperationsService {
     private final CommentsDao commentsDao;
-    private final BooksDao booksDao;
+    private final BookDao bookDao;
     private final IoService ioService;
 
-    public CommentsOperationsService(CommentsDao commentsDao, BooksDao booksDao, IoService ioService) {
+    public CommentsOperationsService(CommentsDao commentsDao, BookDao bookDao, IoService ioService) {
         this.commentsDao = commentsDao;
-        this.booksDao = booksDao;
+        this.bookDao = bookDao;
         this.ioService = ioService;
     }
 
@@ -27,15 +29,15 @@ public class CommentsOperationsService {
     @ShellMethod(key = "create-comment", value = "Create a comment in DB")
     public void createComment(@ShellOption({"comment"})String comment, @ShellOption({"bookName"})String bookName,
                               @ShellOption({"userName"})String userName){
-        Book book = booksDao.findByName(bookName);
+        Book book = bookDao.findByName(bookName);
         commentsDao.save(new Comment(comment, book, userName));
     }
 
     @Transactional(readOnly = true)
     @ShellMethod(key = "show-comments-by-book", value = "Show all comments by book in DB")
     public void showAllCommentsByBook(@ShellOption({"bookName"})String bookName){
-        Book book = booksDao.findByName(bookName);
-        book.getComments().forEach(comment -> ioService.out(comment.toString()));
+        Book book = bookDao.findByName(bookName);
+        commentsDao.findAllByBookId(book.getId()).forEach(comment -> ioService.out(comment.toString()));
     }
 
     @Transactional(readOnly = true)
@@ -46,13 +48,13 @@ public class CommentsOperationsService {
 
     @Transactional
     @ShellMethod(key = "delete-comment", value = "Delete an comment in DB")
-    public void deleteComment(@ShellOption({"id"})long id){
+    public void deleteComment(@ShellOption({"id"})String id){
         commentsDao.deleteById(id);
     }
 
     @Transactional
     @ShellMethod(key = "update-comment", value = "Update comment by id")
-    public void updateCommentById(@ShellOption({"id"})long id,
+    public void updateCommentById(@ShellOption({"id"})String id,
                                @ShellOption({"comment"})String commentString) {
         Optional<Comment> comment = commentsDao.findById(id);
         if (comment.isPresent()){
@@ -60,7 +62,7 @@ public class CommentsOperationsService {
             comment1.setComment(commentString);
             commentsDao.save(comment1);
         } else {
-            ioService.out("No comment found in database by this Id.");
+            ioService.out(ENTITY_NOT_FOUND);
         }
     }
 }
