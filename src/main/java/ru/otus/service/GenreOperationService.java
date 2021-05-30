@@ -1,37 +1,30 @@
 package ru.otus.service;
 
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dao.GenresDao;
 import ru.otus.domain.Genre;
 
-@ShellComponent
+@Service
 public class GenreOperationService {
     private final GenresDao genresDao;
-    private final IoService ioService;
 
-    public GenreOperationService(GenresDao genresDao, IoService ioService) {
+    public GenreOperationService(GenresDao genresDao) {
         this.genresDao = genresDao;
-        this.ioService = ioService;
     }
 
     @Transactional
-    @ShellMethod(key = "create-genre", value = "Create a genre in DB")
-    public void createGenre(@ShellOption({"name"})String name){
+    public void createGenre(String name){
         genresDao.save(new Genre(name));
     }
 
     @Transactional(readOnly = true)
-    @ShellMethod(key = "show-genres", value = "Show all genres in DB")
-    public void showAllGenre(){
-        genresDao.findAll().forEach(genre -> ioService.out(genre.toString()));
+    public Iterable<Genre> getAllGenre(){
+        return genresDao.findAll();
     }
 
     @Transactional
-    @ShellMethod(key = "delete-genre", value = "Delete an genre in DB")
-    public void deleteGenre(@ShellOption({"id"})long id){
+    public void deleteGenre(Long id){
         genresDao.deleteById(id);
     }
 }

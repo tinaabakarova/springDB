@@ -1,37 +1,30 @@
 package ru.otus.service;
 
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dao.AuthorsDao;
 import ru.otus.domain.Author;
 
-@ShellComponent
+@Service
 public class AuthorOperationService {
     private final AuthorsDao authorsDao;
-    private final IoService ioService;
 
-    public AuthorOperationService(AuthorsDao authorsDao, IoService ioService) {
+    public AuthorOperationService(AuthorsDao authorsDao) {
         this.authorsDao = authorsDao;
-        this.ioService = ioService;
     }
 
     @Transactional
-    @ShellMethod(key = "create-author", value = "Create a author in DB")
-    public void createAuthor(@ShellOption({"name"})String name){
+    public void createAuthor(String name){
         authorsDao.save(new Author(name));
     }
 
     @Transactional(readOnly = true)
-    @ShellMethod(key = "show-authors", value = "Show all authors in DB")
-    public void showAllAuthors(){
-        authorsDao.findAll().forEach(author -> ioService.out(author.toString()));
+    public Iterable<Author> getAllAuthors(){
+        return authorsDao.findAll();
     }
 
     @Transactional
-    @ShellMethod(key = "delete-author", value = "Delete an author in DB")
-    public void deleteAuthor(@ShellOption({"id"})long id){
+    public void deleteAuthor(Long id){
         authorsDao.deleteById(id);
     }
 }
