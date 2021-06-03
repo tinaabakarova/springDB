@@ -9,21 +9,22 @@ import ru.otus.domain.Author;
 import ru.otus.domain.Book;
 import ru.otus.domain.Genre;
 
-import javax.persistence.EntityNotFoundException;
+import ru.otus.exception.EntityNotFoundException;
 import java.util.Optional;
 
 @Service
-public class BookOperationsService {
+public class BookServiceImpl implements BookService{
     private final BooksDao booksDao;
     private final AuthorsDao authorsDao;
     private final GenresDao genresDao;
 
-    public BookOperationsService(BooksDao booksDao, AuthorsDao authorsDao, GenresDao genresDao) {
+    public BookServiceImpl(BooksDao booksDao, AuthorsDao authorsDao, GenresDao genresDao) {
         this.authorsDao = authorsDao;
         this.genresDao = genresDao;
         this.booksDao = booksDao;
     }
 
+    @Override
     @Transactional
     public void createBook(String name,
                            String author,
@@ -31,21 +32,25 @@ public class BookOperationsService {
         booksDao.save(new Book(name, authorsDao.findByName(author), genresDao.findByName(genre)));
     }
 
+    @Override
     @Transactional(readOnly = true)
     public Iterable<Book> getAllBooks() {
         return booksDao.findAll();
     }
 
+    @Override
     @Transactional
     public void deleteBook(Long id) {
         booksDao.deleteById(id);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public Optional<Book> getBookById(Long id) {
         return booksDao.findById(id);
     }
 
+    @Override
     @Transactional
     public Book updateBookById(Long id,
                                String name,

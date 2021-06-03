@@ -11,15 +11,16 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 @Service
-public class CommentsOperationsService {
+public class CommentServiceImpl implements CommentService{
     private final CommentsDao commentsDao;
     private final BooksDao booksDao;
 
-    public CommentsOperationsService(CommentsDao commentsDao, BooksDao booksDao) {
+    public CommentServiceImpl(CommentsDao commentsDao, BooksDao booksDao) {
         this.commentsDao = commentsDao;
         this.booksDao = booksDao;
     }
 
+    @Override
     @Transactional
     public void createComment(String comment,
                               String bookName,
@@ -28,22 +29,26 @@ public class CommentsOperationsService {
         commentsDao.save(new Comment(comment, book, userName));
     }
 
+    @Override
     @Transactional(readOnly = true)
     public Iterable<Comment> getAllCommentsByBook(Long id) {
         Book book = booksDao.findById(id).orElseThrow(EntityNotFoundException::new);
         return book.getComments();
     }
 
+    @Override
     @Transactional(readOnly = true)
     public Iterable<Comment> getAllComments() {
         return commentsDao.findAll();
     }
 
+    @Override
     @Transactional
     public void deleteComment(Long id) {
         commentsDao.deleteById(id);
     }
 
+    @Override
     @Transactional
     public Comment updateCommentById(Long id,
                                   String commentString) {

@@ -34,10 +34,10 @@
         <td th:text="${book.author}">Author</td>
         <td th:text="${book.genre}">Genre</td>
         <td>
-            <a th:href="@{/edit(id=${book.id})}" href="editBook.html">Edit</a>
+            <a th:href="@{/edit(id=${book.id})}" href="bookOperations.html">Edit</a>
         </td>
         <td>
-            <a th:href="@{/delete(id=${book.id})}" href="editBook.html">Delete</a>
+            <a th:href="@{/delete(id=${book.id})}" href="bookOperations.html">Delete</a>
         </td>
         <td>
             <a th:href="@{/comments(id=${book.id})}" href="showComments.html">Comments</a>
