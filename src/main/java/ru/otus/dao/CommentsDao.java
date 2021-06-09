@@ -4,5 +4,5 @@ import org.springframework.data.repository.CrudRepository;
 import ru.otus.domain.Comment;
 
 public interface CommentsDao extends CrudRepository<Comment, Long> {
-
+     public Iterable<Comment> findAllByBookId(Long id);
 }

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.otus.domain.Comment;
 import ru.otus.service.CommentService;
 import ru.otus.service.CommentServiceImpl;
 
@@ -21,9 +20,7 @@ public class CommentsController {
 
     @GetMapping("/comments")
     public String listCommentsByBook(@RequestParam("id") Long id, Model model) {
-        Iterable<Comment> comments = commentService.getAllCommentsByBook(id);
-        model.addAttribute("comments", comments);
-
+        model.addAttribute("id", id);
         return "showComments";
     }
 }
