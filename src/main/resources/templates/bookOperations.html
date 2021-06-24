@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Create book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+<!-- Book creation -->
+<form id="create-form" th:action="@{${action}}" th:object="${bookDTO}" th:method="post" action="bookOperations.html">
+        <div class="row">
+            <label for="id-input">ID:</label>
+            <input id="id-input" type="text" readonly="readonly"/>
+        </div>
+
+        <div class="row">
+            <label for="name-input">Book name:</label>
+            <input id="name-input" name="name" type="text" />
+        </div>
+
+        <div class="row">
+            <label for="author-input">Author name:</label>
+            <select id="author-input" name="Author name:" >
+
+            </select>
+        </div>
+
+        <div class="row">
+            <label for="genre-input">Genre name:</label>
+            <select id="genre-input" name="Genre name:" >
+
+            </select>
+        </div>
+
+        <div class="row">
+              <button id="submit" type="submit" th:text="${submitOption}"></button>
+        </div>
+</form>
+<script>
+    var id = [[${id}]];
+</script>
+<script th:src="@{/bookOperations.js}" type="text/javascript"></script>
+
+</body>
+</html>
