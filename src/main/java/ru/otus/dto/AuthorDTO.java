@@ -7,7 +7,7 @@ import ru.otus.domain.Author;
 @Data
 @NoArgsConstructor
 public class AuthorDTO {
-    private long id;
+    private String id;
     private String name;
 
     public AuthorDTO(Author author) {

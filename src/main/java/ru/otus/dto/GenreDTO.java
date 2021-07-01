@@ -7,7 +7,7 @@ import ru.otus.domain.Genre;
 @Data
 @NoArgsConstructor
 public class GenreDTO {
-    private long id;
+    private String id;
     private String name;
 
     public GenreDTO(Genre genre) {

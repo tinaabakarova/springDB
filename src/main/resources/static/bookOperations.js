@@ -4,6 +4,7 @@
 
                 var bookAuthor;
                 var bookGenre;
+                var id = $.urlParam('id', window.location.href);
                 $.ajax({
                         type: "get",
                         url: "/api/books",

@@ -1,29 +1,27 @@
 package ru.otus.rest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.otus.domain.Comment;
+import reactor.core.publisher.Flux;
+import ru.otus.dao.CommentsDao;
 import ru.otus.dto.CommentDTO;
-import ru.otus.service.CommentService;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @RestController
 public class CommentController {
-    private final CommentService commentService;
+    private final CommentsDao commentsDao;
 
-    public CommentController(CommentService commentService) {
-        this.commentService = commentService;
+    @Autowired
+    public CommentController(CommentsDao commentsDao) {
+        this.commentsDao = commentsDao;
     }
 
     @GetMapping("/api/comments")
-    public List<CommentDTO> getAllComments(@RequestParam("id") Long id) {
-        Iterable<Comment> comments = commentService.getAllCommentsByBook(id);
-        return StreamSupport.stream(comments.spliterator(), false)
-                .map(CommentDTO::new)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Flux<CommentDTO> getAllComments(@RequestParam("id") String id) {
+        return commentsDao.findAllByBookId(id).map(CommentDTO::new);
     }
 }

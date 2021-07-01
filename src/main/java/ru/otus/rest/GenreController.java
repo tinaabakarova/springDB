@@ -1,28 +1,26 @@
 package ru.otus.rest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.otus.domain.Genre;
+import reactor.core.publisher.Flux;
+import ru.otus.dao.GenreDao;
 import ru.otus.dto.GenreDTO;
-import ru.otus.service.GenreService;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @RestController
 public class GenreController {
-    private final GenreService genreService;
+    private final GenreDao genreDao;
 
-    public GenreController(GenreService genreService) {
-        this.genreService = genreService;
+    @Autowired
+    public GenreController(GenreDao genreDao) {
+        this.genreDao = genreDao;
     }
 
     @GetMapping("/api/genres/all")
-    public List<GenreDTO> getAllGenres() {
-        Iterable<Genre> genres = genreService.getAllGenre();
-        return StreamSupport.stream(genres.spliterator(), false)
-                .map(GenreDTO::new)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Flux<GenreDTO> getAllGenres() {
+        return genreDao.findAll().map(GenreDTO::new);
     }
 }

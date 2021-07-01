@@ -1,52 +1,84 @@
 package ru.otus.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import ru.otus.dao.AuthorDao;
+import ru.otus.dao.BookDao;
+import ru.otus.dao.GenreDao;
 import ru.otus.domain.Book;
 import ru.otus.dto.BookDTO;
 import ru.otus.exception.EntityNotFoundException;
-import ru.otus.service.BookService;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @RestController
 public class BookController {
-    private final BookService bookService;
+    private final BookDao bookDao;
+    private final AuthorDao authorDao;
+    private final GenreDao genreDao;
 
     @Autowired
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
+    public BookController(BookDao bookDao, AuthorDao authorDao, GenreDao genreDao) {
+        this.bookDao = bookDao;
+        this.authorDao = authorDao;
+        this.genreDao = genreDao;
     }
 
     @GetMapping("/api/books/all")
-    public List<BookDTO> getAllBooks() {
-        Iterable<Book> books = bookService.getAllBooks();
-        return StreamSupport.stream(books.spliterator(), false)
-                .map(BookDTO::new)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Flux<BookDTO> getAllBooks() {
+        return  bookDao.findAll().map(BookDTO::new);
     }
 
 
     @DeleteMapping("/api/books")
-    public void deleteBookById(@RequestParam("id") Long id) {
-        bookService.deleteBook(id);
+    @Transactional
+    public Mono<Void> deleteBookById(@RequestParam("id") String id) {
+        return bookDao.deleteById(id);
     }
 
 
     @GetMapping("/api/books")
-    public BookDTO getBook(@RequestParam("id") Long id) {
-        return new BookDTO(bookService.getBookById(id).orElseThrow(EntityNotFoundException::new));
+    @Transactional(readOnly = true)
+    public Mono<BookDTO> getBook(@RequestParam("id") String id) {
+        return bookDao.findById(id).map(BookDTO::new).doOnError(EntityNotFoundException::new);
     }
 
     @PutMapping("/api/books")
-    public void updateBook(@RequestBody BookDTO bookDTO) {
-        bookService.updateBookById(bookDTO.getId(), bookDTO.getName(), bookDTO.getAuthorName(), bookDTO.getGenreName());
+    @Transactional
+    public  Mono<Book>  updateBook(@RequestBody BookDTO bookDTO) {
+        return bookDao.findById(bookDTO.getId())
+                .zipWith(authorDao.findByName(bookDTO.getAuthorName()),
+                        (b, a) -> {
+                            b.setName(bookDTO.getName());
+                            b.setAuthor(a);
+                            return b;
+                        })
+                .zipWith(genreDao.findByName(bookDTO.getGenreName()),
+                        (b, g) -> {
+                            b.setGenre(g);
+                            return b;
+                        })
+                .flatMap(bookDao::save);
     }
 
     @PostMapping("/api/books")
-    public void saveBook(@RequestBody BookDTO bookDTO) {
-        bookService.createBook(bookDTO.getName(), bookDTO.getAuthorName(), bookDTO.getGenreName());
+    @Transactional
+    public  Mono<Book>  saveBook(@RequestBody BookDTO bookDTO) {
+        return Mono.just(new Book())
+                .zipWith(authorDao.findByName(bookDTO.getAuthorName()),
+                        (b, a) -> {
+                            b.setName(bookDTO.getName());
+                            b.setAuthor(a);
+                            return b;
+                        })
+                .zipWith(genreDao.findByName(bookDTO.getGenreName()),
+                        (b, g) -> {
+                            b.setGenre(g);
+                            return b;
+                        })
+                .flatMap(bookDao::save);
     }
 }

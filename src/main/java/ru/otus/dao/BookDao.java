@@ -1,8 +1,9 @@
 package ru.otus.dao;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Mono;
 import ru.otus.domain.Book;
 
-public interface BookDao extends MongoRepository<Book, String>, BookDaoCustom {
-    public Book findByName(String name);
+public interface BookDao extends ReactiveMongoRepository<Book, String> {
+    public Mono<Book> findByName(String name);
 }

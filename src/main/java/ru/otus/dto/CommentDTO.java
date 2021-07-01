@@ -8,7 +8,7 @@ import ru.otus.domain.Comment;
 @Data
 @NoArgsConstructor
 public class CommentDTO {
-    private long id;
+    private String id;
     private String comment;
     private Book book;
     private String userName;

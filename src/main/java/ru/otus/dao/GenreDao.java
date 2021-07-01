@@ -1,8 +1,9 @@
 package ru.otus.dao;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Mono;
 import ru.otus.domain.Genre;
 
-public interface GenreDao extends MongoRepository<Genre, String>, GenreDaoCustom{
-    public Genre findByName(String name);
+public interface GenreDao extends ReactiveMongoRepository<Genre, String>{
+    Mono<Genre> findByName(String name);
 }

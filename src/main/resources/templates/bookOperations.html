@@ -55,9 +55,7 @@
               <button id="submit" type="submit" th:text="${submitOption}"></button>
         </div>
 </form>
-<script>
-    var id = [[${id}]];
-</script>
+<script th:src="@{/urlParam.js}" type="text/javascript"></script>
 <script th:src="@{/bookOperations.js}" type="text/javascript"></script>
 
 </body>

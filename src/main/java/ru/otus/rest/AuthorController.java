@@ -1,30 +1,25 @@
 package ru.otus.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.otus.domain.Author;
+import reactor.core.publisher.Flux;
+import ru.otus.dao.AuthorDao;
 import ru.otus.dto.AuthorDTO;
-import ru.otus.service.AuthorService;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @RestController
 public class AuthorController {
-    private final AuthorService authorService;
+    private final AuthorDao authorDao;
 
     @Autowired
-    public AuthorController(AuthorService authorService) {
-        this.authorService = authorService;
+    public AuthorController(AuthorDao authorDao) {
+        this.authorDao = authorDao;
     }
 
     @GetMapping("/api/authors/all")
-    public List<AuthorDTO> getAllAuthors() {
-        Iterable<Author> authors = authorService.getAllAuthors();
-        return StreamSupport.stream(authors.spliterator(), false)
-                .map(AuthorDTO::new)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public Flux<AuthorDTO> getAllAuthors() {
+        return authorDao.findAll().map(AuthorDTO::new);
     }
 }
