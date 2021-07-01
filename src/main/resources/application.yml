@@ -1,19 +1,15 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-    initialization-mode: always
-    driverClassName: org.h2.Driver
-    platform: h2
-    data: classpath:Data.sql
+  data:
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      database: library
 
-  jpa:
-    generate-ddl: false
-    hibernate:
-      ddl-auto: none
-    database: H2
-    database-platform: org.hibernate.dialect.H2Dialect
-
-    show-sql: true
-
-debug: true
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.changelogs
+logging:
+  level:
+    root: ERROR
 

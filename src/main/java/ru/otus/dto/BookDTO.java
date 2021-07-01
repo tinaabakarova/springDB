@@ -9,7 +9,7 @@ import ru.otus.domain.Genre;
 @Data
 @NoArgsConstructor
 public class BookDTO {
-    private long id;
+    private String id;
     private String name;
     private Author author;
     private Genre genre;

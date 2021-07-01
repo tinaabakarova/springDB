@@ -3,21 +3,18 @@ package ru.otus.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import java.util.Objects;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name="AUTHORS")
+@Document
 public class Author {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="AUTHOR_ID", nullable = false, unique = true)
-    private long id;
-    @Column(name="AUTHOR_NAME", nullable = false, unique = true)
+    private String id;
     private String name;
 
     public Author(String name) {
@@ -29,7 +26,7 @@ public class Author {
         if (this == o) return true;
         if (!(o instanceof Author)) return false;
         Author author = (Author) o;
-        return id == author.id &&
+        return id.equals(author.id) &&
                 name.equals(author.name);
     }
 

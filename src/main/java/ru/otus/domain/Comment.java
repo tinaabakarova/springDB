@@ -3,29 +3,19 @@ package ru.otus.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.BatchSize;
-
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Objects;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "COMMENTS")
-@NamedEntityGraph(name = "otus-comments-entity-graph",
-        attributeNodes = {@NamedAttributeNode("book")})
+@Document
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @Column(name = "COMMENT", nullable = false)
+    private String id;
     private String comment;
-    @BatchSize(size = 5)
-    @ManyToOne(targetEntity = Book.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "BOOK", nullable = false)
     private Book book;
-    @Column(name = "USER_NAME", nullable = false)
     private String userName;
 
     public Comment(String comment, Book book, String userName) {
@@ -39,7 +29,7 @@ public class Comment {
         if (this == o) return true;
         if (!(o instanceof Comment)) return false;
         Comment comment1 = (Comment) o;
-        return id == comment1.id && comment.equals(comment1.comment) && book.equals(comment1.book) && userName.equals(comment1.userName);
+        return id.equals(comment1.id) && comment.equals(comment1.comment) && book.equals(comment1.book) && userName.equals(comment1.userName);
     }
 
     @Override
