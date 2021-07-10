@@ -6,8 +6,8 @@ import ru.otus.dao.BooksDao;
 import ru.otus.dao.CommentsDao;
 import ru.otus.domain.Book;
 import ru.otus.domain.Comment;
+import ru.otus.exception.EntityNotFoundException;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 @Service
