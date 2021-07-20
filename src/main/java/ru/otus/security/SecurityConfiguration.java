@@ -25,11 +25,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests().antMatchers( "/login" ).anonymous()
                 .and()
-                .authorizeRequests().antMatchers( "/**").authenticated()
+                .authorizeRequests()
+                .antMatchers( "/").hasAnyRole("USER", "ADMIN")
+                .antMatchers( "/create").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/delete").hasRole("ADMIN")
+                .antMatchers("/edit").hasRole("ADMIN")
+                .anyRequest().authenticated()
                 .and()
-                .formLogin()
-                .passwordParameter( "enc_pass" )
-                .successForwardUrl( "/" );
+                .formLogin().permitAll()
+                .passwordParameter("enc_pass")
+                .successForwardUrl("/")
+                .and()
+                .logout().permitAll()
+                .logoutUrl("/logout")
+                .clearAuthentication(true)
+                .deleteCookies();
     }
 
     @Bean
