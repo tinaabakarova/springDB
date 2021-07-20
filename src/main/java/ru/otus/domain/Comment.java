@@ -22,7 +22,7 @@ public class Comment {
     @Column(name = "COMMENT", nullable = false)
     private String comment;
     @BatchSize(size = 5)
-    @ManyToOne(targetEntity = Book.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Book.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "BOOK", nullable = false)
     private Book book;
     @Column(name = "USER_NAME", nullable = false)

@@ -21,45 +21,44 @@
             margin-top: 10px;
         }
     </style>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 
 <!-- Book creation -->
 <form id="create-form" th:action="@{${action}}" th:object="${bookDTO}" th:method="post" action="bookOperations.html">
-    <h1>Book Info:</h1>
+        <div class="row">
+            <label for="id-input">ID:</label>
+            <input id="id-input" type="text" readonly="readonly"/>
+        </div>
 
-    <div class="row">
-        <label for="id-input">ID:</label>
-        <input id="id-input" type="text" readonly="readonly" th:field="*{id}" value="1"/>
-    </div>
+        <div class="row">
+            <label for="name-input">Book name:</label>
+            <input id="name-input" name="name" type="text" />
+        </div>
 
-    <div class="row">
-        <label for="holder-input">Book name:</label>
-        <input id="holder-input" name="name" type="text" th:field="*{name}" value="John Doe"/>
-    </div>
+        <div class="row">
+            <label for="author-input">Author name:</label>
+            <select id="author-input" name="Author name:" >
 
-    <div class="row">
-        <label for="author-input">Author name:</label>
-        <select id="author-input" name="Author name:" th:field="*{authorName}">
-            <option th:each="author : ${authors}"
-                    th:value="${author.name}" th:text="${author.name}"
-                    th:selected="${author.equals(bookDTO.author)}"></option>
-        </select>
-    </div>
+            </select>
+        </div>
 
-    <div class="row">
-        <label for="genre-input">Genre name:</label>
-        <select id="genre-input" name="Genre name:" th:field="*{genreName}">
-            <option th:each="genre : ${genres}"
-                    th:value="${genre.name}" th:text="${genre.name}"
-                    th:selected="${genre.equals(bookDTO.genre)}"></option>
-        </select>
-    </div>
+        <div class="row">
+            <label for="genre-input">Genre name:</label>
+            <select id="genre-input" name="Genre name:" >
 
-    <div class="row">
-        <button type="submit" th:text="${submitOption}"></button>
-    </div>
+            </select>
+        </div>
+
+        <div class="row">
+              <button id="submit" type="submit" th:text="${submitOption}"></button>
+        </div>
 </form>
+<script>
+    var id = [[${id}]];
+</script>
+<script th:src="@{/bookOperations.js}" type="text/javascript"></script>
 
 </body>
 </html>

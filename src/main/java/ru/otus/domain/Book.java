@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 @Data
@@ -33,10 +32,6 @@ public class Book {
             CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "GENRE", nullable = false)
     private Genre genre;
-
-    @OneToMany(cascade = CascadeType.ALL,
-               fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "book")
-    private List<Comment> comments;
 
     public Book(String name, Author author, Genre genre) {
         this.name = name;

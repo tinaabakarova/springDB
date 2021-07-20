@@ -13,6 +13,7 @@
             padding: 5px;
         }
     </style>
+    <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
 <h1>Books:</h1>
@@ -28,30 +29,15 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="book : ${books}">
-        <td th:text="${book.id}">1</td>
-        <td th:text="${book.name}">John Doe</td>
-        <td th:text="${book.author}">Author</td>
-        <td th:text="${book.genre}">Genre</td>
-        <td>
-            <a th:href="@{/edit(id=${book.id})}" href="bookOperations.html">Edit</a>
-        </td>
-        <td>
-            <a th:href="@{/delete(id=${book.id})}" href="bookOperations.html">Delete</a>
-        </td>
-        <td>
-            <a th:href="@{/comments(id=${book.id})}" href="showComments.html">Comments</a>
-        </td>
-    </tr>
     </tbody>
 </table>
-
 <br>
 <div class="row">
     <button>
         <a th:href="@{/create}" href="createBook.html">Create new book</a>
     </button>
 </div>
-
+<script th:src="@{/main.js}" type="text/javascript"></script>
+<script th:src="@{/urlParam.js}" type="text/javascript"></script>
 </body>
 </html>

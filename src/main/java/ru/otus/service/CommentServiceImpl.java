@@ -6,8 +6,8 @@ import ru.otus.dao.BooksDao;
 import ru.otus.dao.CommentsDao;
 import ru.otus.domain.Book;
 import ru.otus.domain.Comment;
+import ru.otus.exception.EntityNotFoundException;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 @Service
@@ -32,8 +32,7 @@ public class CommentServiceImpl implements CommentService{
     @Override
     @Transactional(readOnly = true)
     public Iterable<Comment> getAllCommentsByBook(Long id) {
-        Book book = booksDao.findById(id).orElseThrow(EntityNotFoundException::new);
-        return book.getComments();
+        return commentsDao.findAllByBookId(id);
     }
 
     @Override
