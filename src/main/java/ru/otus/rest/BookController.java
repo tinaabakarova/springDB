@@ -1,7 +1,6 @@
 package ru.otus.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.domain.Book;
 import ru.otus.dto.BookDTO;
@@ -29,7 +28,6 @@ public class BookController {
                 .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/api/books")
     public void deleteBookById(@RequestParam("id") Long id) {
         bookService.deleteBook(id);
@@ -40,7 +38,6 @@ public class BookController {
         return new BookDTO(bookService.getBookById(id).orElseThrow(EntityNotFoundException::new));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/api/books")
     public void updateBook(@RequestBody BookDTO bookDTO) {
         bookService.updateBookById(bookDTO.getId(), bookDTO.getName(), bookDTO.getAuthorName(), bookDTO.getGenreName());

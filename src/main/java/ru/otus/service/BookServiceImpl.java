@@ -1,5 +1,6 @@
 package ru.otus.service;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dao.AuthorsDao;
@@ -38,6 +39,7 @@ public class BookServiceImpl implements BookService{
         return booksDao.findAll();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     @Transactional
     public void deleteBook(Long id) {
@@ -50,6 +52,7 @@ public class BookServiceImpl implements BookService{
         return booksDao.findById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     @Transactional
     public Book updateBookById(Long id,
