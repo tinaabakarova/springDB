@@ -55,6 +55,7 @@
                 		data: JSON.stringify({'id': id, 'name': name, 'authorName': author, 'genreName': genre}),
                 		cache: false,
                 		success: function(result) {
+                            window.alert(result);
                 			window.location = "/";
                 		}
                 	});
@@ -98,7 +99,8 @@
                 		data: JSON.stringify({'name': name, 'authorName': author, 'genreName': genre}),
                 		cache: false,
                 		success: function(result) {
-                			window.location = "/";
+                            window.alert(result);
+                            window.location = "/";
                 		}
                 	});
                 });

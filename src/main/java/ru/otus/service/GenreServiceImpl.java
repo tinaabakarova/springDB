@@ -1,9 +1,13 @@
 package ru.otus.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.dao.GenresDao;
 import ru.otus.domain.Genre;
+import ru.otus.utils.Constants;
+
+import java.util.ArrayList;
 
 @Service
 public class GenreServiceImpl implements GenreService{
@@ -14,20 +18,19 @@ public class GenreServiceImpl implements GenreService{
     }
 
     @Override
-    @Transactional
-    public void createGenre(String name){
-        genresDao.save(new Genre(name));
-    }
-
-    @Override
     @Transactional(readOnly = true)
+    @HystrixCommand(commandKey="libraryKey", fallbackMethod="fallbackGenres")
     public Iterable<Genre> getAllGenre(){
         return genresDao.findAll();
     }
 
-    @Override
-    @Transactional
-    public void deleteGenre(Long id){
-        genresDao.deleteById(id);
+    private Iterable<Genre> fallbackGenres() {
+        return new ArrayList<>(){{
+            add(
+                    Genre.builder()
+                        .id(0L)
+                        .name(Constants.NOT_AVAILABLE)
+                        .build());
+        }};
     }
 }
