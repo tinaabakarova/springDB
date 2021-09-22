@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8"/>
     <title>List of all books</title>
@@ -14,6 +15,9 @@
         }
     </style>
     <script src="/webjars/jquery/3.3.1/jquery.min.js"></script>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Logout" />
+    </form>
 </head>
 <body>
 <h1>Books:</h1>

@@ -28,12 +28,10 @@ public class BookController {
                 .collect(Collectors.toList());
     }
 
-
     @DeleteMapping("/api/books")
     public void deleteBookById(@RequestParam("id") Long id) {
         bookService.deleteBook(id);
     }
-
 
     @GetMapping("/api/books")
     public BookDTO getBook(@RequestParam("id") Long id) {
