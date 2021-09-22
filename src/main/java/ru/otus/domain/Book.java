@@ -1,5 +1,6 @@
 package ru.otus.domain;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
@@ -9,6 +10,7 @@ import java.util.Objects;
 
 @Data
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "BOOKS")
 @NamedEntityGraph(name = "otus-books-entity-graph",
@@ -22,14 +24,12 @@ public class Book {
     private String name;
 
     @BatchSize(size = 5)
-    @ManyToOne(targetEntity = Author.class, cascade = {CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(targetEntity = Author.class, cascade = {CascadeType.MERGE})
     @JoinColumn(name = "AUTHOR", nullable = false)
     private Author author;
 
     @BatchSize(size = 5)
-    @ManyToOne(targetEntity = Genre.class, cascade = {CascadeType.MERGE,
-            CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(targetEntity = Genre.class, cascade = {CascadeType.MERGE})
     @JoinColumn(name = "GENRE", nullable = false)
     private Genre genre;
 

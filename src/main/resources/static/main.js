@@ -21,6 +21,7 @@
             });
         });
         $(document).delegate('#delete', 'click', function() {
+            event.preventDefault();
         	var href =$(this).attr('href');
             var bookId = $.urlParam('id', href);
             $.ajax({
@@ -28,6 +29,7 @@
                 method: 'DELETE',
                 contentType: 'application/json',
                 success: function(result) {
+                    window.alert(result);
                     window.location = "/";
                 }
             });
